@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Reading Star" />
+  <meta name="theme-color" content="#FBF7F0" />
+  <meta name="description" content="AR-style reading comprehension quizzes for young readers. Read a book, answer 5 questions, collect stickers." />
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQyIiBmaWxsPSIjRkY3QTQ1Ii8+PHBvbHlnb24gcG9pbnRzPSI5MCwzMiAxMDQuNSw2NiAxNDEsNzAgMTEzLjUsOTUuNSAxMjEuNSwxMzIgOTAsMTE0IDU4LjUsMTMyIDY2LjUsOTUuNSAzOSw3MCA3NS41LDY2IiBmaWxsPSIjRkZEMzY2Ii8+PC9zdmc+" />
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQyIiBmaWxsPSIjRkY3QTQ1Ii8+PHBvbHlnb24gcG9pbnRzPSI5MCwzMiAxMDQuNSw2NiAxNDEsNzAgMTEzLjUsOTUuNSAxMjEuNSwxMzIgOTAsMTE0IDU4LjUsMTMyIDY2LjUsOTUuNSAzOSw3MCA3NS41LDY2IiBmaWxsPSIjRkZEMzY2Ii8+PC9zdmc+" />
+  <title>Reading Star Quiz</title>
+  <style>
+    :root {
+      --bg: #FBF7F0;
+      --surface: #FFFFFF;
+      --ink: #24243A;
+      --muted: #7A7A8C;
+      --primary: #FF7A45;
+      --primary-soft: #FFF0E8;
+      --primary-deep: #ED5F28;
+      --gold: #F5A623;
+      --gold-soft: #FFF6E0;
+      --green: #17A673;
+      --green-soft: #E7F8F0;
+      --red: #E15B5B;
+      --red-soft: #FDECEC;
+      --blue: #4A78D0;
+      --blue-soft: #EDF2FD;
+      --line: #EFE6D8;
+      --shadow: 0 8px 24px rgba(36, 36, 58, 0.07);
+      --shadow-sm: 0 3px 10px rgba(36, 36, 58, 0.06);
+      --radius: 20px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --tabbar-h: 66px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #EEE8DE;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior-y: none;
+    }
+
+    body { min-height: 100dvh; }
+
+    button {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      border: 0;
+      background: none;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    .app-shell {
+      position: relative;
+      max-width: 500px;
+      min-height: 100dvh;
+      margin: 0 auto;
+      background: var(--bg);
+      padding-bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 12px);
+      box-shadow: 0 0 48px rgba(0, 0, 0, 0.09);
+      overflow-x: hidden;
+    }
+
+    /* ---------- top bar ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: calc(12px + var(--safe-top)) 18px 12px;
+      background: rgba(251, 247, 240, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(239, 230, 216, 0.9);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-mark {
+      width: 38px; height: 38px;
+      flex: 0 0 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #FF9A5B 0%, #FF6B3D 100%);
+      display: grid; place-items: center;
+      color: #fff; font-size: 20px;
+      box-shadow: 0 4px 12px rgba(255, 107, 61, 0.35);
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .brand p {
+      margin: 1px 0 0;
+      font-size: 11.5px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .pill-btn:active { transform: scale(0.96); }
+
+    /* ---------- screens ---------- */
+    .screen { padding: 18px 18px 8px; animation: fade-up 0.24s ease both; }
+    .screen[hidden] { display: none; }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 2px 2px 12px;
+    }
+    .section-title h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+    .section-title span { font-size: 12px; color: var(--muted); font-weight: 700; }
+
+    /* ---------- hero / how it works ---------- */
+    .hero {
+      background: linear-gradient(135deg, #FFF6EC 0%, #FFEDE0 60%, #FFF3E4 100%);
+      border: 1px solid #FFE1CC;
+      border-radius: var(--radius);
+      padding: 16px 16px 14px;
+      margin-bottom: 16px;
+    }
+    .hero h2 {
+      margin: 0 0 4px;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #6E5A4A;
+      font-weight: 600;
+    }
+    .hero-steps {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .hero-step {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      padding: 8px 8px 7px;
+      text-align: center;
+    }
+    .hero-step b { display: block; font-size: 16px; line-height: 1.2; }
+    .hero-step span { display: block; font-size: 10.5px; color: #8A7361; font-weight: 800; margin-top: 2px; }
+
+    /* ---------- book cards ---------- */
+    .book-list { display: flex; flex-direction: column; gap: 12px; }
+    .book-card {
+      display: flex;
+      gap: 13px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      box-shadow: var(--shadow);
+    }
+    .cover-wrap {
+      position: relative;
+      flex: 0 0 84px;
+      width: 84px;
+      aspect-ratio: 2 / 3;
+      border-radius: 10px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #F2ECE2 0%, #E7DFD2 100%);
+      box-shadow: 0 4px 12px rgba(36, 36, 58, 0.16);
+    }
+    .cover-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .cover-fallback {
+      position: absolute; inset: 0;
+      display: none;
+      place-items: center;
+      font-size: 30px;
+      background: linear-gradient(135deg, #FFE9D6 0%, #FFD9BE 100%);
+    }
+    .cover-wrap.is-broken img { display: none; }
+    .cover-wrap.is-broken .cover-fallback { display: grid; }
+
+    .book-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .book-title {
+      margin: 0;
+      font-size: 15.5px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      line-height: 1.25;
+    }
+    .book-author { margin: 2px 0 0; font-size: 11.5px; color: var(--muted); font-weight: 700; }
+    .ar-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+    .ar-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #2F5BB0;
+      font-size: 11.5px;
+      font-weight: 900;
+      letter-spacing: 0.1px;
+    }
+    .ar-chip.gold { background: var(--gold-soft); color: #A96A00; }
+    .book-status { margin-top: 8px; font-size: 11.5px; font-weight: 800; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .book-status.earned { color: var(--green); }
+    .book-actions { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 10px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 13px;
+      font-size: 14px;
+      font-weight: 900;
+      touch-action: manipulation;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: linear-gradient(135deg, #FF8F55 0%, #FF6B33 100%);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(255, 107, 51, 0.32);
+    }
+    .btn-ghost {
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      color: var(--ink);
+    }
+    .btn-soft { background: var(--primary-soft); color: var(--primary-deep); }
+    .btn-block { width: 100%; }
+    .btn-lg { min-height: 50px; font-size: 15.5px; border-radius: 15px; }
+    .btn[disabled] { opacity: 0.5; }
+
+    .sticker-mini {
+      display: inline-grid;
+      place-items: center;
+      width: 26px; height: 26px;
+      border-radius: 9px;
+      font-size: 15px;
+      background: var(--gold-soft);
+      box-shadow: inset 0 0 0 1px rgba(245, 166, 35, 0.25);
+    }
+
+    /* ---------- quiz ---------- */
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .icon-btn {
+      flex: 0 0 40px;
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      display: grid; place-items: center;
+      font-size: 17px;
+      box-shadow: var(--shadow-sm);
+    }
+    .icon-btn:active { transform: scale(0.94); }
+    .quiz-heading { flex: 1; min-width: 0; }
+    .quiz-heading h2 {
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .quiz-heading p { margin: 1px 0 0; font-size: 11px; font-weight: 800; color: var(--muted); }
+    .step-count {
+      flex: 0 0 auto;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--primary-deep);
+      background: var(--primary-soft);
+      padding: 7px 12px;
+      border-radius: 999px;
+    }
+    .progress-track {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 16px;
+    }
+    .progress-seg {
+      flex: 1;
+      height: 7px;
+      border-radius: 999px;
+      background: #EDE4D7;
+      transition: background 0.25s ease;
+    }
+    .progress-seg.done { background: linear-gradient(90deg, #FFB067 0%, #FF7A45 100%); }
+    .progress-seg.now { background: #FFC89A; }
+
+    .q-card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 16px 15px;
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+    }
+    .q-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      color: var(--primary-deep);
+      background: var(--primary-soft);
+      padding: 4px 9px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .q-text {
+      margin: 10px 0 0;
+      font-size: 18px;
+      line-height: 1.42;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+    .q-tools { position: absolute; top: 14px; right: 14px; }
+    .speak-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--blue-soft);
+      color: #3366C9;
+      display: grid; place-items: center;
+      font-size: 16px;
+      touch-action: manipulation;
+    }
+    .speak-btn:active { transform: scale(0.92); }
+    .speak-btn.on { background: #DCE8FF; }
+
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      width: 100%;
+      text-align: left;
+      min-height: 58px;
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 700;
+      color: var(--ink);
+      transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+      touch-action: manipulation;
+    }
+    .option:active { transform: scale(0.985); }
+    .option .key {
+      flex: 0 0 26px;
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      background: #F5EFE5;
+      color: #8A7361;
+      font-size: 12.5px;
+      font-weight: 900;
+      display: grid; place-items: center;
+    }
+    .option .txt { flex: 1; }
+    .option .mark { flex: 0 0 18px; font-size: 16px; text-align: right; opacity: 0; }
+    .option.is-correct {
+      border-color: #34C08A;
+      background: var(--green-soft);
+    }
+    .option.is-correct .key { background: #C9F0DF; color: #0E7C55; }
+    .option.is-correct .mark { opacity: 1; }
+    .option.is-wrong {
+      border-color: #F0A8A8;
+      background: var(--red-soft);
+      animation: shake 0.32s ease;
+    }
+    .option.is-wrong .key { background: #F8D5D5; color: #B33B3B; }
+    .option.is-wrong .mark { opacity: 1; }
+    .option.is-dim { opacity: 0.62; }
+    .option[disabled] { cursor: default; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      60% { transform: translateX(4px); }
+      85% { transform: translateX(-2px); }
+    }
+
+    .feedback {
+      margin-top: 14px;
+      border-radius: 16px;
+      padding: 14px;
+      border: 1.5px solid transparent;
+      animation: pop-in 0.24s ease both;
+    }
+    .feedback.good { background: var(--green-soft); border-color: #BDEBD8; }
+    .feedback.soft { background: #FFF8E8; border-color: #F4E2BC; }
+    .feedback h3 {
+      margin: 0 0 5px;
+      font-size: 15px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .feedback.good h3 { color: #0E7C55; }
+    .feedback.soft h3 { color: #A96A00; }
+    .feedback p { margin: 0; font-size: 13.5px; line-height: 1.55; color: #4B4B5C; font-weight: 600; }
+    .feedback .answer-line {
+      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #2E6A4F;
+    }
+    .feedback-actions { margin-top: 12px; }
+    @keyframes pop-in {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* ---------- result ---------- */
+    .result-wrap { text-align: center; padding-top: 6px; }
+    .score-ring {
+      position: relative;
+      width: 148px;
+      height: 148px;
+      margin: 8px auto 0;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(#FFB067 var(--pct, 0%), #F0E7DA 0);
+    }
+    .score-ring::after {
+      content: "";
+      position: absolute;
+      inset: 11px;
+      border-radius: 50%;
+      background: var(--bg);
+    }
+    .score-inner { position: relative; z-index: 1; }
+    .score-inner b { display: block; font-size: 38px; font-weight: 900; line-height: 1; letter-spacing: -1px; }
+    .score-inner small { display: block; font-size: 12px; font-weight: 800; color: var(--muted); margin-top: 4px; }
+    .result-title { margin: 16px 0 4px; font-size: 21px; font-weight: 900; letter-spacing: -0.4px; }
+    .result-sub { margin: 0 auto; font-size: 13.5px; line-height: 1.55; color: var(--muted); font-weight: 650; max-width: 300px; }
+
+    .sticker-reveal {
+      margin: 16px auto 0;
+      width: 100%;
+      max-width: 320px;
+      border-radius: 22px;
+      padding: 18px 16px 16px;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 14px 30px rgba(36, 36, 58, 0.18);
+    }
+    .sticker-reveal::before {
+      content: "";
+      position: absolute;
+      inset: -40% -10% auto -10%;
+      height: 120%;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.42), transparent 55%);
+      animation: sheen 3.2s ease-in-out infinite;
+    }
+    @keyframes sheen {
+      0%, 100% { transform: translateX(-12%) rotate(-4deg); opacity: 0.85; }
+      50% { transform: translateX(12%) rotate(4deg); opacity: 0.55; }
+    }
+    .sticker-reveal .st-emoji {
+      position: relative;
+      display: block;
+      font-size: 62px;
+      line-height: 1;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.22));
+      animation: sticker-pop 0.7s cubic-bezier(0.18, 1.4, 0.4, 1) both;
+    }
+    @keyframes sticker-pop {
+      0% { transform: scale(0.2) rotate(-22deg); opacity: 0; }
+      70% { transform: scale(1.12) rotate(6deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    .sticker-reveal .st-kicker {
+      position: relative;
+      display: block;
+      margin-top: 8px;
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      opacity: 0.92;
+    }
+    .sticker-reveal .st-name {
+      position: relative;
+      display: block;
+      margin-top: 2px;
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+    .sticker-reveal .st-book {
+      position: relative;
+      display: block;
+      margin-top: 3px;
+      font-size: 11.5px;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    .result-actions { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
+    .result-actions .row { display: flex; gap: 9px; }
+    .result-actions .row .btn { flex: 1; }
+
+    .review-box {
+      margin-top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      text-align: left;
+      box-shadow: var(--shadow-sm);
+    }
+    .review-box h4 { margin: 0 0 8px; font-size: 12px; font-weight: 900; color: var(--muted); letter-spacing: 0.4px; text-transform: uppercase; }
+    .review-item { display: flex; gap: 8px; font-size: 12.5px; line-height: 1.45; font-weight: 650; padding: 6px 0; border-top: 1px dashed #EEE4D6; }
+    .review-item:first-of-type { border-top: 0; }
+    .review-item .dot { flex: 0 0 16px; font-size: 13px; }
+    .review-item .q { color: #55556A; }
+
+    /* ---------- sticker book ---------- */
+    .sticker-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .sticker-card {
+      border-radius: 18px;
+      padding: 14px 10px 12px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      min-height: 158px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .sticker-card.earned { color: #fff; border-color: transparent; box-shadow: 0 10px 22px rgba(36, 36, 58, 0.16); }
+    .sticker-card.earned::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
+      transform: translateX(-120%);
+      animation: glint 3.6s ease-in-out infinite;
+    }
+    @keyframes glint {
+      0%, 65% { transform: translateX(-120%); }
+      85%, 100% { transform: translateX(120%); }
+    }
+    .sticker-card .big { font-size: 42px; line-height: 1; }
+    .sticker-card.earned .big { animation: bob 2.6s ease-in-out infinite; filter: drop-shadow(0 5px 8px rgba(0,0,0,0.2)); }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-5px) rotate(3deg); }
+    }
+    .sticker-card .name { margin-top: 8px; font-size: 13px; font-weight: 900; letter-spacing: -0.2px; }
+    .sticker-card .sub { margin-top: 3px; font-size: 10.5px; font-weight: 700; opacity: 0.85; line-height: 1.35; }
+    .sticker-card.locked { background: repeating-linear-gradient(135deg, #FBF6EE 0 10px, #F5EEE3 10px 20px); }
+    .sticker-card.locked .big { opacity: 0.32; filter: grayscale(1); }
+    .sticker-card.locked .name { color: #9C9384; }
+    .sticker-card.locked .sub { color: #A9A093; }
+    .lock-badge {
+      position: absolute;
+      top: 9px; right: 9px;
+      font-size: 12px;
+      opacity: 0.5;
+    }
+    .stickers-foot { margin-top: 18px; }
+    .foot-note { font-size: 11.5px; color: var(--muted); line-height: 1.5; font-weight: 650; margin: 10px 2px 0; }
+    .mini-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .mini-actions .btn { flex: 1; min-height: 44px; font-size: 12.5px; }
+    .danger-link { display: block; width: 100%; margin-top: 12px; text-align: center; font-size: 11.5px; font-weight: 800; color: #B0A695; padding: 8px; }
+    .file-input { display: none; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 18px);
+      transform: translate(-50%, 12px);
+      background: rgba(36, 36, 58, 0.94);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 10px 16px;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      z-index: 90;
+      max-width: 86%;
+      text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* ---------- tabbar ---------- */
+    .tabbar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 500px;
+      z-index: 40;
+      display: flex;
+      gap: 6px;
+      padding: 8px 14px calc(8px + var(--safe-bottom));
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--line);
+    }
+    .tab {
+      flex: 1;
+      min-height: 50px;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #9A9184;
+      touch-action: manipulation;
+    }
+    .tab i { font-style: normal; font-size: 18px; line-height: 1; }
+    .tab.is-active { color: var(--primary-deep); background: var(--primary-soft); }
+    .tab:active { transform: scale(0.97); }
+
+    /* ---------- confetti ---------- */
+    .confetti-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 80;
+      overflow: hidden;
+    }
+    .confetti-bit {
+      position: absolute;
+      top: -16px;
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      opacity: 0.95;
+      animation: confetti-fall linear forwards;
+    }
+    @keyframes confetti-fall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105dvh) rotate(600deg); opacity: 0.9; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    }
+
+    @media (max-width: 360px) {
+      .cover-wrap { flex-basis: 74px; width: 74px; }
+      .q-text { font-size: 16.5px; }
+      .option { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">★</span>
+        <div>
+          <h1>Reading Star Quiz</h1>
+          <p>AR-style · 영영 독후 퀴즈</p>
+        </div>
+      </div>
+      <button class="pill-btn" type="button" id="stickerShortcut" aria-label="Open sticker book">
+        <span aria-hidden="true">🏅</span><span id="stickerCount">0</span>
+      </button>
+    </header>
+
+    <main>
+      <!-- ============ BOOKS ============ -->
+      <section class="screen" id="screen-books">
+        <div class="hero">
+          <h2>Read a book. Take 5 questions. Win a sticker!</h2>
+          <p>Each book has 5 quiz questions, just like a real AR quiz. Get 4 or more right to win that book's sticker.</p>
+          <div class="hero-steps">
+            <div class="hero-step"><b>📖</b><span>READ</span></div>
+            <div class="hero-step"><b>❓</b><span>5 QUESTIONS</span></div>
+            <div class="hero-step"><b>🏅</b><span>STICKER</span></div>
+          </div>
+        </div>
+
+        <div class="section-title">
+          <h2>My Books</h2>
+          <span id="bookCount"></span>
+        </div>
+        <div class="book-list" id="bookList"></div>
+        <p class="foot-note" id="booksNote">Loading books…</p>
+      </section>
+
+      <!-- ============ QUIZ ============ -->
+      <section class="screen" id="screen-quiz" hidden>
+        <div class="quiz-top">
+          <button class="icon-btn" type="button" id="quizBack" aria-label="Quit quiz">✕</button>
+          <div class="quiz-heading">
+            <h2 id="quizBookTitle">—</h2>
+            <p id="quizBookAr">—</p>
+          </div>
+          <span class="step-count" id="stepCount">1 / 5</span>
+        </div>
+        <div class="progress-track" id="progressTrack" aria-hidden="true"></div>
+
+        <div class="q-card">
+          <span class="q-label">Question</span>
+          <div class="q-tools">
+            <button class="speak-btn" type="button" id="speakBtn" aria-label="Read the question aloud">🔊</button>
+          </div>
+          <p class="q-text" id="questionText">—</p>
+        </div>
+
+        <div class="options" id="optionList" role="group" aria-label="Answer choices"></div>
+
+        <div id="feedbackSlot"></div>
+      </section>
+
+      <!-- ============ RESULT ============ -->
+      <section class="screen" id="screen-result" hidden>
+        <div class="result-wrap">
+          <div class="score-ring" id="scoreRing">
+            <div class="score-inner">
+              <b id="scoreBig">0/5</b>
+              <small id="scorePct">0%</small>
+            </div>
+          </div>
+          <h2 class="result-title" id="resultTitle">—</h2>
+          <p class="result-sub" id="resultSub">—</p>
+
+          <div id="stickerSlot"></div>
+
+          <div class="result-actions">
+            <div class="row">
+              <button class="btn btn-ghost" type="button" id="resultRetry">🔁 Try Again</button>
+              <button class="btn btn-primary" type="button" id="resultStickers">🏅 Sticker Book</button>
+            </div>
+            <button class="btn btn-soft btn-block" type="button" id="resultBooks">📚 Back to My Books</button>
+          </div>
+
+          <div class="review-box" id="reviewBox"></div>
+        </div>
+      </section>
+
+      <!-- ============ STICKERS ============ -->
+      <section class="screen" id="screen-stickers" hidden>
+        <div class="section-title">
+          <h2>My Sticker Book</h2>
+          <span id="stickerSummary"></span>
+        </div>
+        <div class="sticker-grid" id="stickerGrid"></div>
+
+        <div class="stickers-foot">
+          <p class="foot-note">Score 4 out of 5 (80%) or more to win a sticker. Your stickers are saved on this device.</p>
+          <div class="mini-actions">
+            <button class="btn btn-ghost" type="button" id="exportBtn">⬇️ Export</button>
+            <button class="btn btn-ghost" type="button" id="importBtn">⬆️ Import</button>
+          </div>
+          <input type="file" id="importFile" class="file-input" accept="application/json,.json" />
+          <button class="danger-link" type="button" id="resetBtn">Reset all progress</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="tab is-active" type="button" data-tab="books"><i aria-hidden="true">📚</i><span>Books</span></button>
+      <button class="tab" type="button" data-tab="stickers"><i aria-hidden="true">🏅</i><span>Sticker Book</span></button>
+    </nav>
+  </div>
+
+  <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    "use strict";
+
+    /* ------------------------------------------------------------------
+       Storage (safe for iOS Safari private mode / blocked storage)
+    ------------------------------------------------------------------ */
+    var STORAGE_KEY = "readingStarQuiz.v1";
+    var memoryStore = null;
+
+    function storageAvailable() {
+      try {
+        var probe = "__rsq_probe__";
+        window.localStorage.setItem(probe, "1");
+        window.localStorage.removeItem(probe);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+    var HAS_STORAGE = storageAvailable();
+
+    function emptyState() {
+      return { version: 1, books: {}, updatedAt: null };
+    }
+
+    function loadState() {
+      if (!HAS_STORAGE) return memoryStore || (memoryStore = emptyState());
+      try {
+        var raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return emptyState();
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object" || !parsed.books) return emptyState();
+        return parsed;
+      } catch (e) {
+        return emptyState();
+      }
+    }
+
+    function saveState(state) {
+      state.updatedAt = new Date().toISOString();
+      memoryStore = state;
+      if (!HAS_STORAGE) return;
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        /* quota or blocked — keep the in-memory copy for this session */
+      }
+    }
+
+    /* ------------------------------------------------------------------
+       App state
+    ------------------------------------------------------------------ */
+    var DATA = null;
+    var state = loadState();
+    var quiz = null; /* { book, index, answers: [] } */
+
+    var el = function (id) { return document.getElementById(id); };
+
+    function $(sel, root) { return (root || document).querySelector(sel); }
+
+    function bookById(id) {
+      if (!DATA) return null;
+      for (var i = 0; i < DATA.books.length; i++) {
+        if (DATA.books[i].id === id) return DATA.books[i];
+      }
+      return null;
+    }
+
+    function recordFor(id) {
+      if (!state.books[id]) state.books[id] = { best: 0, bestPct: 0, attempts: 0, sticker: false, earnedAt: null, lastAt: null };
+      return state.books[id];
+    }
+
+    function arLabel(book) {
+      var bl = Number(book.ar.bl).toFixed(1);
+      var pts = Number(book.ar.points).toFixed(1);
+      return "AR " + bl + " · " + pts + " pts";
+    }
+
+    function earnedCount() {
+      var n = 0;
+      if (!DATA) return 0;
+      DATA.books.forEach(function (b) { if (recordFor(b.id).sticker) n++; });
+      return n;
+    }
+
+    function pad(n) { return n < 10 ? "0" + n : "" + n; }
+
+    function todayLabel() {
+      var d = new Date();
+      return d.getFullYear() + "." + pad(d.getMonth() + 1) + "." + pad(d.getDate());
+    }
+
+    /* ------------------------------------------------------------------
+       Screen switching
+    ------------------------------------------------------------------ */
+    var SCREENS = ["books", "quiz", "result", "stickers"];
+
+    function showScreen(name) {
+      SCREENS.forEach(function (s) {
+        var node = el("screen-" + s);
+        if (node) node.hidden = (s !== name);
+      });
+      var tabs = document.querySelectorAll(".tab");
+      for (var i = 0; i < tabs.length; i++) {
+        var t = tabs[i];
+        var isActive = (name === "books" && t.dataset.tab === "books") ||
+                       (name === "stickers" && t.dataset.tab === "stickers");
+        t.classList.toggle("is-active", !!isActive);
+      }
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+
+    function toast(msg) {
+      var t = el("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      window.clearTimeout(t._timer);
+      t._timer = window.setTimeout(function () { t.classList.remove("show"); }, 2200);
+    }
+
+    /* ------------------------------------------------------------------
+       Books screen
+    ------------------------------------------------------------------ */
+    function renderBooks() {
+      var list = el("bookList");
+      list.innerHTML = "";
+      if (!DATA) return;
+
+      DATA.books.forEach(function (book) {
+        var rec = recordFor(book.id);
+        var card = document.createElement("article");
+        card.className = "book-card";
+
+        var cover = document.createElement("div");
+        cover.className = "cover-wrap";
+        var img = document.createElement("img");
+        img.src = book.cover;
+        img.alt = "Book cover: " + book.title;
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.onerror = function () { cover.classList.add("is-broken"); };
+        var fb = document.createElement("div");
+        fb.className = "cover-fallback";
+        fb.textContent = "📕";
+        cover.appendChild(img);
+        cover.appendChild(fb);
+
+        var main = document.createElement("div");
+        main.className = "book-main";
+
+        var h3 = document.createElement("h3");
+        h3.className = "book-title";
+        h3.textContent = book.title;
+
+        var au = document.createElement("p");
+        au.className = "book-author";
+        au.textContent = "by " + book.author + (book.series ? " · " + book.series : "");
+
+        var arRow = document.createElement("div");
+        arRow.className = "ar-row";
+        var chip1 = document.createElement("span");
+        chip1.className = "ar-chip";
+        chip1.textContent = "BL " + Number(book.ar.bl).toFixed(1);
+        var chip2 = document.createElement("span");
+        chip2.className = "ar-chip gold";
+        chip2.textContent = Number(book.ar.points).toFixed(1) + " pts";
+        arRow.appendChild(chip1);
+        arRow.appendChild(chip2);
+
+        var status = document.createElement("div");
+        status.className = "book-status" + (rec.sticker ? " earned" : "");
+        if (rec.sticker) {
+          status.innerHTML = '<span class="sticker-mini" aria-hidden="true">' + book.sticker.emoji + "</span> Sticker earned · best " + rec.best + "/5";
+        } else if (rec.attempts > 0) {
+          status.textContent = "Best score " + rec.best + "/5 · keep going!";
+        } else {
+          status.textContent = "Not taken yet";
+        }
+
+        var actions = document.createElement("div");
+        actions.className = "book-actions";
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn " + (rec.attempts > 0 ? "btn-ghost" : "btn-primary");
+        btn.innerHTML = (rec.attempts > 0 ? "🔁 Try Again" : "▶ Start Quiz") + " · 5 questions";
+        btn.addEventListener("click", function () { startQuiz(book.id); });
+        actions.appendChild(btn);
+
+        main.appendChild(h3);
+        main.appendChild(au);
+        main.appendChild(arRow);
+        main.appendChild(status);
+        main.appendChild(actions);
+
+        card.appendChild(cover);
+        card.appendChild(main);
+        list.appendChild(card);
+      });
+
+      el("bookCount").textContent = DATA.books.length + " books";
+      el("stickerCount").textContent = earnedCount();
+      var quizTotal = DATA.books.length * 5;
+      el("booksNote").textContent = DATA.books.length + " AR books · " + quizTotal + " quiz questions · stickers saved on this device";
+    }
+
+    /* ------------------------------------------------------------------
+       Quiz
+    ------------------------------------------------------------------ */
+    function startQuiz(bookId) {
+      var book = bookById(bookId);
+      if (!book) return;
+      quiz = { book: book, index: 0, answers: [] };
+      el("quizBookTitle").textContent = book.title;
+      el("quizBookAr").textContent = arLabel(book) + " · Quiz #" + book.ar.quiz;
+      showScreen("quiz");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      var book = quiz.book;
+      var q = book.questions[quiz.index];
+      var total = book.questions.length;
+
+      el("stepCount").textContent = (quiz.index + 1) + " / " + total;
+      var track = el("progressTrack");
+      track.innerHTML = "";
+      for (var i = 0; i < total; i++) {
+        var seg = document.createElement("span");
+        seg.className = "progress-seg" + (i < quiz.index ? " done" : (i === quiz.index ? " now" : ""));
+        track.appendChild(seg);
+      }
+
+      el("questionText").textContent = q.q;
+      el("feedbackSlot").innerHTML = "";
+
+      var opts = el("optionList");
+      opts.innerHTML = "";
+      var letters = ["A", "B", "C", "D", "E", "F"];
+      q.options.forEach(function (text, i) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "option";
+        b.setAttribute("data-index", String(i));
+
+        var key = document.createElement("span");
+        key.className = "key";
+        key.textContent = letters[i] || String(i + 1);
+
+        var txt = document.createElement("span");
+        txt.className = "txt";
+        txt.textContent = text;
+
+        var mark = document.createElement("span");
+        mark.className = "mark";
+        mark.setAttribute("aria-hidden", "true");
+
+        b.appendChild(key);
+        b.appendChild(txt);
+        b.appendChild(mark);
+        b.addEventListener("click", function () { answer(i, b); });
+        opts.appendChild(b);
+      });
+
+      var speakBtn = el("speakBtn");
+      speakBtn.classList.remove("on");
+      window.setTimeout(function () { window.scrollTo({ top: 0, behavior: "auto" }); }, 0);
+    }
+
+    function answer(choiceIndex, btnNode) {
+      var q = quiz.book.questions[quiz.index];
+      if (quiz.answers[quiz.index] !== undefined) return; /* already answered */
+
+      var correct = (choiceIndex === q.answer);
+      quiz.answers[quiz.index] = { choice: choiceIndex, correct: correct };
+
+      var buttons = el("optionList").querySelectorAll("button.option");
+      for (var i = 0; i < buttons.length; i++) {
+        var b = buttons[i];
+        var idx = Number(b.getAttribute("data-index"));
+        b.disabled = true;
+        var mark = b.querySelector(".mark");
+        if (idx === q.answer) {
+          b.classList.add("is-correct");
+          mark.textContent = "✓";
+        } else if (idx === choiceIndex) {
+          b.classList.add("is-wrong");
+          mark.textContent = "✕";
+        } else {
+          b.classList.add("is-dim");
+        }
+      }
+
+      var wrap = document.createElement("div");
+      wrap.className = "feedback " + (correct ? "good" : "soft");
+
+      var h3 = document.createElement("h3");
+      h3.textContent = correct ? "✅ Correct! Great reading!" : "💛 Not quite — that's okay!";
+
+      var body = document.createElement("div");
+      if (!correct) {
+        var answerLine = document.createElement("p");
+        answerLine.className = "answer-line";
+        answerLine.textContent = "The answer is: " + q.options[q.answer];
+        body.appendChild(answerLine);
+      }
+      var p = document.createElement("p");
+      p.textContent = q.explain;
+      body.appendChild(p);
+
+      var actions = document.createElement("div");
+      actions.className = "feedback-actions";
+      var nextBtn = document.createElement("button");
+      nextBtn.type = "button";
+      nextBtn.className = "btn btn-primary btn-block";
+      var isLast = (quiz.index === quiz.book.questions.length - 1);
+      nextBtn.textContent = isLast ? "See my score 🏅" : "Next question →";
+      nextBtn.addEventListener("click", function () {
+        if (isLast) { finishQuiz(); }
+        else { quiz.index += 1; renderQuestion(); }
+      });
+      actions.appendChild(nextBtn);
+
+      wrap.appendChild(h3);
+      wrap.appendChild(body);
+      wrap.appendChild(actions);
+
+      var slot = el("feedbackSlot");
+      slot.innerHTML = "";
+      slot.appendChild(wrap);
+
+      var fb = wrap;
+      window.setTimeout(function () {
+        var top = fb.getBoundingClientRect().top + window.pageYOffset - 16;
+        var room = window.innerHeight - fb.getBoundingClientRect().height;
+        window.scrollTo({ top: Math.max(0, Math.min(top, window.pageYOffset + fb.getBoundingClientRect().top - Math.max(60, room * 0.3))), behavior: "smooth" });
+      }, 60);
+    }
+
+    function finishQuiz() {
+      var book = quiz.book;
+      var total = book.questions.length;
+      var score = quiz.answers.filter(function (a) { return a && a.correct; }).length;
+      var pct = Math.round((score / total) * 100);
+      var rec = recordFor(book.id);
+      rec.attempts += 1;
+      rec.lastAt = new Date().toISOString();
+      if (score > rec.best) rec.best = score;
+      if (pct > rec.bestPct) rec.bestPct = pct;
+
+      var wonSticker = (pct >= 80);
+      var isNewSticker = false;
+      if (wonSticker && !rec.sticker) {
+        rec.sticker = true;
+        rec.earnedAt = new Date().toISOString();
+        isNewSticker = true;
+      } else if (wonSticker && !rec.earnedAt) {
+        rec.earnedAt = new Date().toISOString();
+      }
+      saveState(state);
+
+      renderResult(book, score, total, pct, wonSticker, isNewSticker);
+      showScreen("result");
+      el("stickerCount").textContent = earnedCount();
+      if (isNewSticker) {
+        window.setTimeout(function () { celebrate(); }, 220);
+      }
+    }
+
+    function renderResult(book, score, total, pct, wonSticker, isNewSticker) {
+      el("scoreBig").textContent = score + "/" + total;
+      el("scorePct").textContent = pct + "%";
+      el("scoreRing").style.setProperty("--pct", pct + "%");
+
+      var title, sub;
+      if (score === total) {
+        title = "Perfect score! 🌟";
+        sub = "You are a real Reading Star. You remembered every part of the story!";
+      } else if (wonSticker) {
+        title = "Great reading! 👏";
+        sub = "You got " + score + " out of " + total + ". That's 80% or more, so a sticker is yours!";
+      } else if (score === 3) {
+        title = "So close! 💪";
+        sub = "You got " + score + " out of " + total + ". Read the book one more time and try again — you need 4 to win the sticker.";
+      } else {
+        title = "Good try! 🌱";
+        sub = "You got " + score + " out of " + total + ". Every try makes you stronger. Read the book again and give it another go!";
+      }
+      el("resultTitle").textContent = title;
+      el("resultSub").textContent = sub;
+
+      var slot = el("stickerSlot");
+      slot.innerHTML = "";
+      if (wonSticker) {
+        var card = document.createElement("div");
+        card.className = "sticker-reveal";
+        card.style.background = book.sticker.bg;
+        card.innerHTML =
+          '<span class="st-emoji" aria-hidden="true">' + book.sticker.emoji + "</span>" +
+          '<span class="st-kicker">' + (isNewSticker ? "New sticker unlocked!" : "Sticker earned again!") + "</span>" +
+          '<span class="st-name">' + book.sticker.name + "</span>" +
+          '<span class="st-book">' + book.title + "</span>";
+        slot.appendChild(card);
+      }
+
+      var review = el("reviewBox");
+      review.innerHTML = "";
+      var h4 = document.createElement("h4");
+      h4.textContent = "Your answers";
+      review.appendChild(h4);
+      book.questions.forEach(function (q, i) {
+        var a = quiz.answers[i];
+        var ok = a && a.correct;
+        var row = document.createElement("div");
+        row.className = "review-item";
+        var dot = document.createElement("span");
+        dot.className = "dot";
+        dot.textContent = ok ? "✅" : "💛";
+        var txt = document.createElement("span");
+        txt.className = "q";
+        txt.textContent = q.q + (ok ? "" : " → " + q.options[q.answer]);
+        row.appendChild(dot);
+        row.appendChild(txt);
+        review.appendChild(row);
+      });
+
+      el("resultRetry").onclick = function () { startQuiz(book.id); };
+      el("resultStickers").onclick = function () { renderStickers(); showScreen("stickers"); };
+      el("resultBooks").onclick = function () { renderBooks(); showScreen("books"); };
+    }
+
+    /* ------------------------------------------------------------------
+       Celebration
+    ------------------------------------------------------------------ */
+    function celebrate() {
+      var layer = el("confettiLayer");
+      var colors = ["#FF7A45", "#FFB03A", "#4A78D0", "#22C55E", "#8B5CF6", "#F5A623", "#FF5E8A"];
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) return;
+      for (var i = 0; i < 46; i++) {
+        var bit = document.createElement("span");
+        bit.className = "confetti-bit";
+        bit.style.left = (Math.random() * 100).toFixed(2) + "%";
+        bit.style.background = colors[i % colors.length];
+        var dur = 1.5 + Math.random() * 1.3;
+        bit.style.animationDuration = dur.toFixed(2) + "s";
+        bit.style.animationDelay = (Math.random() * 0.5).toFixed(2) + "s";
+        bit.style.width = (6 + Math.random() * 6).toFixed(0) + "px";
+        bit.style.height = (10 + Math.random() * 10).toFixed(0) + "px";
+        if (Math.random() > 0.6) bit.style.borderRadius = "50%";
+        layer.appendChild(bit);
+      }
+      window.setTimeout(function () { layer.innerHTML = ""; }, 3400);
+    }
+
+    /* ------------------------------------------------------------------
+       Sticker book
+    ------------------------------------------------------------------ */
+    function renderStickers() {
+      var grid = el("stickerGrid");
+      grid.innerHTML = "";
+      if (!DATA) return;
+
+      DATA.books.forEach(function (book) {
+        var rec = recordFor(book.id);
+        var card = document.createElement("div");
+        card.className = "sticker-card " + (rec.sticker ? "earned" : "locked");
+
+        if (rec.sticker) {
+          card.style.background = book.sticker.bg;
+          card.innerHTML =
+            '<span class="big" aria-hidden="true">' + book.sticker.emoji + "</span>" +
+            '<span class="name">' + book.sticker.name + "</span>" +
+            '<span class="sub">' + book.title + "<br />" + (rec.earnedAt ? formatDate(rec.earnedAt) : todayLabel()) + "</span>";
+        } else {
+          card.innerHTML =
+            '<span class="lock-badge" aria-hidden="true">🔒</span>' +
+            '<span class="big" aria-hidden="true">' + book.sticker.emoji + "</span>" +
+            '<span class="name">' + book.sticker.name + "</span>" +
+            '<span class="sub">' + book.title + "<br />Score 4+ to unlock</span>";
+        }
+        grid.appendChild(card);
+      });
+
+      el("stickerSummary").textContent = earnedCount() + " / " + DATA.books.length + " stickers";
+      el("stickerCount").textContent = earnedCount();
+    }
+
+    function formatDate(iso) {
+      try {
+        var d = new Date(iso);
+        return d.getFullYear() + "." + pad(d.getMonth() + 1) + "." + pad(d.getDate());
+      } catch (e) { return ""; }
+    }
+
+    /* ------------------------------------------------------------------
+       Export / import / reset
+    ------------------------------------------------------------------ */
+    function exportProgress() {
+      var payload = {
+        app: "reading-star-quiz",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        progress: state
+      };
+      try {
+        var text = JSON.stringify(payload, null, 2);
+        var blob = new Blob([text], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "reading-star-progress-" + todayLabel().replace(/\./g, "") + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+        toast("Progress file saved ⬇️");
+      } catch (e) {
+        try {
+          window.prompt("Copy your progress text:", JSON.stringify(payload));
+        } catch (e2) {
+          toast("Could not export on this device.");
+        }
+      }
+    }
+
+    function importProgressFile(file) {
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          var parsed = JSON.parse(String(reader.result));
+          var incoming = parsed && parsed.progress ? parsed.progress : parsed;
+          if (!incoming || typeof incoming !== "object" || !incoming.books) throw new Error("bad file");
+          state = { version: 1, books: incoming.books, updatedAt: new Date().toISOString() };
+          saveState(state);
+          renderBooks();
+          renderStickers();
+          showScreen("stickers");
+          toast("Progress imported ✅");
+        } catch (e) {
+          toast("That file did not look right. Try another backup file.");
+        }
+      };
+      reader.onerror = function () { toast("Could not read that file."); };
+      reader.readAsText(file);
+    }
+
+    /* ------------------------------------------------------------------
+       Speech
+    ------------------------------------------------------------------ */
+    var canSpeak = ("speechSynthesis" in window) && ("SpeechSynthesisUtterance" in window);
+
+    function speak(text) {
+      if (!canSpeak) { toast("Reading aloud is not available here."); return; }
+      try {
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        u.rate = 0.82;
+        u.pitch = 1.05;
+        window.speechSynthesis.speak(u);
+      } catch (e) { /* ignore */ }
+    }
+
+    /* ------------------------------------------------------------------
+       Wiring
+    ------------------------------------------------------------------ */
+    function wire() {
+      document.querySelectorAll(".tab").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          var name = tab.dataset.tab;
+          if (name === "books") { renderBooks(); showScreen("books"); }
+          if (name === "stickers") { renderStickers(); showScreen("stickers"); }
+        });
+      });
+
+      el("stickerShortcut").addEventListener("click", function () {
+        renderStickers();
+        showScreen("stickers");
+      });
+
+      el("quizBack").addEventListener("click", function () {
+        if (quiz && quiz.answers.length > 0 && quiz.answers.some(function (a) { return a || null; })) {
+          if (!window.confirm("Quit this quiz? Your answers will not be saved.")) return;
+        }
+        renderBooks();
+        showScreen("books");
+      });
+
+      el("speakBtn").addEventListener("click", function () {
+        if (!quiz) return;
+        var q = quiz.book.questions[quiz.index];
+        var parts = [q.q];
+        q.options.forEach(function (o, i) {
+          parts.push(String.fromCharCode(65 + i) + ". " + o);
+        });
+        speak(parts.join(" "));
+        el("speakBtn").classList.add("on");
+      });
+
+      el("resultBooks").addEventListener("click", function () {
+        renderBooks();
+        showScreen("books");
+      });
+
+      el("exportBtn").addEventListener("click", exportProgress);
+      el("importBtn").addEventListener("click", function () { el("importFile").click(); });
+      el("importFile").addEventListener("change", function (e) {
+        var f = e.target.files && e.target.files[0];
+        importProgressFile(f);
+        e.target.value = "";
+      });
+      el("resetBtn").addEventListener("click", function () {
+        if (!window.confirm("Reset all scores and stickers? This cannot be undone.")) return;
+        state = emptyState();
+        saveState(state);
+        renderBooks();
+        renderStickers();
+        toast("Progress reset");
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       Boot
+    ------------------------------------------------------------------ */
+    function boot() {
+      wire();
+      fetch("books.json", { cache: "no-cache" })
+        .then(function (r) {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
+        .then(function (json) {
+          if (!json || !Array.isArray(json.books) || !json.books.length) throw new Error("empty");
+          DATA = json;
+          renderBooks();
+          el("stickerCount").textContent = earnedCount();
+          showScreen("books");
+        })
+        .catch(function () {
+          el("booksNote").textContent = "Could not load books.json. If you opened this file directly, use the GitHub Pages link instead.";
+          el("bookList").innerHTML = "";
+        });
+    }
+
+    boot();
+  </script>
+</body>
+</html>
