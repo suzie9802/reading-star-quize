@@ -3,7 +3,8 @@
 AR(르네상스 Accelerated Reader) 스타일의 영영 독후 퀴즈 웹앱입니다.
 책을 읽고 책당 5문제를 풀면, 4문제(80%) 이상 맞혔을 때 그 책의 스티커를 받아 **Sticker Book**에 모을 수 있습니다.
 
-- 라이브 주소: **https://suzie9802.github.io/reading-star-quiz/**
+- 라이브 주소: **https://suzie9802.github.io/reading-star-quize/**
+  - 저장소 이름이 `reading-star-quize`(끝에 e)로 만들어져 있어 주소도 이렇게 나옵니다. GitHub에서 저장소 이름을 `reading-star-quiz`로 바꾸면 주소는 `https://suzie9802.github.io/reading-star-quiz/`가 되고, 내용은 그대로 따라옵니다.
 - 아이폰 Safari 기준으로 만들었습니다. 홈 화면에 추가하면 앱처럼 열립니다(공유 → 홈 화면에 추가).
 
 ## 수록 도서
