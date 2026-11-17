@@ -1177,12 +1177,13 @@
       slot.innerHTML = "";
       slot.appendChild(wrap);
 
-      var fb = wrap;
       window.setTimeout(function () {
-        var top = fb.getBoundingClientRect().top + window.pageYOffset - 16;
-        var room = window.innerHeight - fb.getBoundingClientRect().height;
-        window.scrollTo({ top: Math.max(0, Math.min(top, window.pageYOffset + fb.getBoundingClientRect().top - Math.max(60, room * 0.3))), behavior: "smooth" });
-      }, 60);
+        var rect = wrap.getBoundingClientRect();
+        var overflow = rect.bottom - (window.innerHeight - 16);
+        if (overflow > 0) {
+          window.scrollTo({ top: window.pageYOffset + overflow, behavior: "smooth" });
+        }
+      }, 70);
     }
 
     function finishQuiz() {
@@ -1210,7 +1211,7 @@
       renderResult(book, score, total, pct, wonSticker, isNewSticker);
       showScreen("result");
       el("stickerCount").textContent = earnedCount();
-      if (isNewSticker) {
+      if (wonSticker) {
         window.setTimeout(function () { celebrate(); }, 220);
       }
     }
@@ -1274,7 +1275,6 @@
 
       el("resultRetry").onclick = function () { startQuiz(book.id); };
       el("resultStickers").onclick = function () { renderStickers(); showScreen("stickers"); };
-      el("resultBooks").onclick = function () { renderBooks(); showScreen("books"); };
     }
 
     /* ------------------------------------------------------------------

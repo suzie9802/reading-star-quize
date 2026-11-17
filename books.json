@@ -14,45 +14,45 @@
         {
           "q": "Why did the President of the United States call the Lambchop family?",
           "options": [
-            "He wanted them to fly a new spaceship and meet the Tyrrans.",
             "He wanted Stanley to be in a Tom Toad cartoon.",
             "He wanted to buy their house in Washington, DC.",
+            "He wanted them to fly a new spaceship and meet the Tyrrans.",
             "He wanted Arthur to teach him how to fly."
           ],
-          "answer": 0,
+          "answer": 2,
           "explain": "The President needed a peaceful family to take the top-secret spaceship Star Scout to the planet Tyrra."
         },
         {
           "q": "When Stanley first answered the telephone, what did he say?",
           "options": [
-            "I am the King of France.",
             "This is the President speaking.",
             "Please call back later.",
-            "I am watching the news."
+            "I am watching the news.",
+            "I am the King of France."
           ],
-          "answer": 0,
+          "answer": 3,
           "explain": "Stanley thought it was a joke, so he said he was the King of France. The President even talked about it on television!"
         },
         {
           "q": "What is the name of the top-secret spaceship?",
           "options": [
-            "The Star Scout",
             "The Tom Toad",
+            "The Star Scout",
             "The TyrraVille",
             "The Polly"
           ],
-          "answer": 0,
+          "answer": 1,
           "explain": "The Star Scout was so new and so secret that almost nobody on Earth knew about it."
         },
         {
           "q": "Why did the Tyrrans run out of food?",
           "options": [
-            "Toxic smoke from Super-Gro ruined all their crops.",
             "Their plants grew too big and filled the whole town.",
             "They ate everything at a birthday party.",
+            "Toxic smoke from Super-Gro ruined all their crops.",
             "The Queen of England took their food away."
           ],
-          "answer": 0,
+          "answer": 2,
           "explain": "Smoke from Super-Gro spoiled the plants on Tyrra. The planet needed a whole year to get better, but the Tyrrans needed food right away."
         },
         {
@@ -80,23 +80,23 @@
         {
           "q": "What happened to Stanley Lambchop that made him flat?",
           "options": [
-            "A big bulletin board fell on him while he was sleeping.",
             "He was rolled up inside a large envelope.",
+            "A big bulletin board fell on him while he was sleeping.",
             "He fell into the swimming pool.",
             "A bicycle pump blew him up too much."
           ],
-          "answer": 0,
+          "answer": 1,
           "explain": "A bulletin board fell on Stanley in the night. He was not hurt, but he became only half an inch thick!"
         },
         {
           "q": "How did Stanley get to California to visit his friend?",
           "options": [
-            "His family mailed him in a large envelope.",
             "He flew there on an airplane.",
             "He rode the train with Arthur.",
-            "He walked all the way there."
+            "He walked all the way there.",
+            "His family mailed him in a large envelope."
           ],
-          "answer": 0,
+          "answer": 3,
           "explain": "Mailing Stanley was much cheaper than a train or plane ticket, so his father put him in a big envelope and sent him off."
         },
         {
@@ -113,23 +113,23 @@
         {
           "q": "How did Stanley help catch the art thieves at the museum?",
           "options": [
-            "He hung on the wall like a painting and called out when they came.",
             "He jumped out of a box and yelled, \"Boo!\"",
             "He wrote a long letter to the police.",
+            "He hung on the wall like a painting and called out when they came.",
             "He took photos with the museum camera."
           ],
-          "answer": 0,
+          "answer": 2,
           "explain": "Stanley dressed up as a painting of a shepherdess and waited on the museum wall. When the thieves broke in, he called out for help."
         },
         {
           "q": "How did Stanley become round again?",
           "options": [
-            "Arthur blew him up with a bicycle pump.",
             "The doctor gave him a very big bandage.",
             "He ate a very big breakfast.",
-            "He slept under the bulletin board again."
+            "He slept under the bulletin board again.",
+            "Arthur blew him up with a bicycle pump."
           ],
-          "answer": 0,
+          "answer": 3,
           "explain": "Arthur used a bicycle pump to fill Stanley up, and the whole family drank hot chocolate to celebrate."
         }
       ]
