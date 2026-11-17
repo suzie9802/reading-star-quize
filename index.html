@@ -826,7 +826,7 @@
         <div class="sticker-grid" id="stickerGrid"></div>
 
         <div class="stickers-foot">
-          <p class="foot-note">Score 4 out of 5 (80%) or more to win a sticker. Your stickers are saved on this device.</p>
+          <p class="foot-note">Score 4 out of 5 (80%) or more to win a sticker. Tap a sticker to make it sparkle. Your stickers are saved on this device.</p>
           <div class="mini-actions">
             <button class="btn btn-ghost" type="button" id="exportBtn">⬇️ Export</button>
             <button class="btn btn-ghost" type="button" id="importBtn">⬆️ Import</button>
@@ -1316,10 +1316,17 @@
 
         if (rec.sticker) {
           card.style.background = book.sticker.bg;
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
+          card.setAttribute("aria-label", "Play the " + book.sticker.name + " sticker celebration");
           card.innerHTML =
             '<span class="big" aria-hidden="true">' + book.sticker.emoji + "</span>" +
             '<span class="name">' + book.sticker.name + "</span>" +
             '<span class="sub">' + book.title + "<br />" + (rec.earnedAt ? formatDate(rec.earnedAt) : todayLabel()) + "</span>";
+          card.addEventListener("click", celebrate);
+          card.addEventListener("keydown", function (ev) {
+            if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); celebrate(); }
+          });
         } else {
           card.innerHTML =
             '<span class="lock-badge" aria-hidden="true">🔒</span>' +
